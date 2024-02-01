@@ -144,7 +144,7 @@ message FieldData {
   }
   int64 field_id = 5;
   bool is_dynamic = 6;
-  repeated bool null_data = 7; 
+  repeated bool valid_data = 7; 
 }
 
 message IDs {
