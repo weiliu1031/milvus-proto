@@ -107,6 +107,8 @@ const (
 	MilvusService_AlterDatabase_FullMethodName               = "/milvus.proto.milvus.MilvusService/AlterDatabase"
 	MilvusService_DescribeDatabase_FullMethodName            = "/milvus.proto.milvus.MilvusService/DescribeDatabase"
 	MilvusService_ReplicateMessage_FullMethodName            = "/milvus.proto.milvus.MilvusService/ReplicateMessage"
+	MilvusService_BackupRBACMeta_FullMethodName              = "/milvus.proto.milvus.MilvusService/BackupRBACMeta"
+	MilvusService_RestoreRBACMeta_FullMethodName             = "/milvus.proto.milvus.MilvusService/RestoreRBACMeta"
 )
 
 // MilvusServiceClient is the client API for MilvusService service.
@@ -208,6 +210,8 @@ type MilvusServiceClient interface {
 	AlterDatabase(ctx context.Context, in *AlterDatabaseRequest, opts ...grpc.CallOption) (*commonpb.Status, error)
 	DescribeDatabase(ctx context.Context, in *DescribeDatabaseRequest, opts ...grpc.CallOption) (*DescribeDatabaseResponse, error)
 	ReplicateMessage(ctx context.Context, in *ReplicateMessageRequest, opts ...grpc.CallOption) (*ReplicateMessageResponse, error)
+	BackupRBACMeta(ctx context.Context, in *BackupRBACMetaRequest, opts ...grpc.CallOption) (*BackupRBACMetaResponse, error)
+	RestoreRBACMeta(ctx context.Context, in *BackupRBACMetaRequest, opts ...grpc.CallOption) (*commonpb.Status, error)
 }
 
 type milvusServiceClient struct {
@@ -994,6 +998,24 @@ func (c *milvusServiceClient) ReplicateMessage(ctx context.Context, in *Replicat
 	return out, nil
 }
 
+func (c *milvusServiceClient) BackupRBACMeta(ctx context.Context, in *BackupRBACMetaRequest, opts ...grpc.CallOption) (*BackupRBACMetaResponse, error) {
+	out := new(BackupRBACMetaResponse)
+	err := c.cc.Invoke(ctx, MilvusService_BackupRBACMeta_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *milvusServiceClient) RestoreRBACMeta(ctx context.Context, in *BackupRBACMetaRequest, opts ...grpc.CallOption) (*commonpb.Status, error) {
+	out := new(commonpb.Status)
+	err := c.cc.Invoke(ctx, MilvusService_RestoreRBACMeta_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MilvusServiceServer is the server API for MilvusService service.
 // All implementations should embed UnimplementedMilvusServiceServer
 // for forward compatibility
@@ -1093,6 +1115,8 @@ type MilvusServiceServer interface {
 	AlterDatabase(context.Context, *AlterDatabaseRequest) (*commonpb.Status, error)
 	DescribeDatabase(context.Context, *DescribeDatabaseRequest) (*DescribeDatabaseResponse, error)
 	ReplicateMessage(context.Context, *ReplicateMessageRequest) (*ReplicateMessageResponse, error)
+	BackupRBACMeta(context.Context, *BackupRBACMetaRequest) (*BackupRBACMetaResponse, error)
+	RestoreRBACMeta(context.Context, *BackupRBACMetaRequest) (*commonpb.Status, error)
 }
 
 // UnimplementedMilvusServiceServer should be embedded to have forward compatible implementations.
@@ -1356,6 +1380,12 @@ func (UnimplementedMilvusServiceServer) DescribeDatabase(context.Context, *Descr
 }
 func (UnimplementedMilvusServiceServer) ReplicateMessage(context.Context, *ReplicateMessageRequest) (*ReplicateMessageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReplicateMessage not implemented")
+}
+func (UnimplementedMilvusServiceServer) BackupRBACMeta(context.Context, *BackupRBACMetaRequest) (*BackupRBACMetaResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BackupRBACMeta not implemented")
+}
+func (UnimplementedMilvusServiceServer) RestoreRBACMeta(context.Context, *BackupRBACMetaRequest) (*commonpb.Status, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RestoreRBACMeta not implemented")
 }
 
 // UnsafeMilvusServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -2917,6 +2947,42 @@ func _MilvusService_ReplicateMessage_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MilvusService_BackupRBACMeta_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BackupRBACMetaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MilvusServiceServer).BackupRBACMeta(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MilvusService_BackupRBACMeta_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MilvusServiceServer).BackupRBACMeta(ctx, req.(*BackupRBACMetaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MilvusService_RestoreRBACMeta_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BackupRBACMetaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MilvusServiceServer).RestoreRBACMeta(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MilvusService_RestoreRBACMeta_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MilvusServiceServer).RestoreRBACMeta(ctx, req.(*BackupRBACMetaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MilvusService_ServiceDesc is the grpc.ServiceDesc for MilvusService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3267,6 +3333,14 @@ var MilvusService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ReplicateMessage",
 			Handler:    _MilvusService_ReplicateMessage_Handler,
+		},
+		{
+			MethodName: "BackupRBACMeta",
+			Handler:    _MilvusService_BackupRBACMeta_Handler,
+		},
+		{
+			MethodName: "RestoreRBACMeta",
+			Handler:    _MilvusService_RestoreRBACMeta_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
