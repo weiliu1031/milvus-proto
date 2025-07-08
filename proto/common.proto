@@ -311,6 +311,13 @@ enum MsgType {
     DescribeDatabase = 1805;
 
     AddCollectionField = 1900;
+
+    /* Snapshot */
+    CreateSnapshot = 2000;
+    DropSnapshot = 2001;
+    ListSnapshots = 2002;
+    DescribeSnapshot = 2003;
+    RestoreSnapshot = 2004;
 }
 
 message MsgBase {
