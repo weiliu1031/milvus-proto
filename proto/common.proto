@@ -456,6 +456,12 @@ enum ObjectPrivilege {
     PrivilegeGetImportProgress = 69;
     PrivilegeListImport = 70;
     PrivilegeAddCollectionField = 71;
+
+    PrivilegeCreateSnapshot = 72;
+    PrivilegeDropSnapshot = 73;
+    PrivilegeDescribeSnapshot = 74;
+    PrivilegeListSnapshots = 75;
+    PrivilegeRestoreSnapshot = 76;
 }
 
 message PrivilegeExt {
