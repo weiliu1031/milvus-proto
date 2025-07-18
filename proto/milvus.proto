@@ -63,6 +63,7 @@ service MilvusService {
   rpc Insert(InsertRequest) returns (MutationResult) {}
   rpc Delete(DeleteRequest) returns (MutationResult) {}
   rpc Upsert(UpsertRequest) returns (MutationResult) {}
+  rpc Update(UpdateRequest) returns (MutationResult) {}
   rpc Search(SearchRequest) returns (SearchResults) {}
   rpc HybridSearch(HybridSearchRequest) returns (SearchResults) {}
   rpc Flush(FlushRequest) returns (FlushResponse) {}
@@ -931,6 +932,22 @@ message AddCollectionFieldRequest {
 }
 
 message UpsertRequest {
+  option (common.privilege_ext_obj) = {
+    object_type: Collection
+    object_privilege: PrivilegeUpdate
+    object_name_index: 3
+  };
+  common.MsgBase base = 1;
+  string db_name = 2;
+  string collection_name = 3;
+  string partition_name = 4;
+  repeated schema.FieldData fields_data = 5;
+  repeated uint32 hash_keys = 6;
+  uint32 num_rows = 7;
+  uint64 schema_timestamp = 8;
+}
+
+message UpdateRequest {
   option (common.privilege_ext_obj) = {
     object_type: Collection
     object_privilege: PrivilegeUpsert

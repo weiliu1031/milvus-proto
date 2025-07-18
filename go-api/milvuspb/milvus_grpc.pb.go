@@ -55,6 +55,7 @@ const (
 	MilvusService_Insert_FullMethodName                      = "/milvus.proto.milvus.MilvusService/Insert"
 	MilvusService_Delete_FullMethodName                      = "/milvus.proto.milvus.MilvusService/Delete"
 	MilvusService_Upsert_FullMethodName                      = "/milvus.proto.milvus.MilvusService/Upsert"
+	MilvusService_Update_FullMethodName                      = "/milvus.proto.milvus.MilvusService/Update"
 	MilvusService_Search_FullMethodName                      = "/milvus.proto.milvus.MilvusService/Search"
 	MilvusService_HybridSearch_FullMethodName                = "/milvus.proto.milvus.MilvusService/HybridSearch"
 	MilvusService_Flush_FullMethodName                       = "/milvus.proto.milvus.MilvusService/Flush"
@@ -168,6 +169,7 @@ type MilvusServiceClient interface {
 	Insert(ctx context.Context, in *InsertRequest, opts ...grpc.CallOption) (*MutationResult, error)
 	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*MutationResult, error)
 	Upsert(ctx context.Context, in *UpsertRequest, opts ...grpc.CallOption) (*MutationResult, error)
+	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*MutationResult, error)
 	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResults, error)
 	HybridSearch(ctx context.Context, in *HybridSearchRequest, opts ...grpc.CallOption) (*SearchResults, error)
 	Flush(ctx context.Context, in *FlushRequest, opts ...grpc.CallOption) (*FlushResponse, error)
@@ -555,6 +557,15 @@ func (c *milvusServiceClient) Delete(ctx context.Context, in *DeleteRequest, opt
 func (c *milvusServiceClient) Upsert(ctx context.Context, in *UpsertRequest, opts ...grpc.CallOption) (*MutationResult, error) {
 	out := new(MutationResult)
 	err := c.cc.Invoke(ctx, MilvusService_Upsert_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *milvusServiceClient) Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*MutationResult, error) {
+	out := new(MutationResult)
+	err := c.cc.Invoke(ctx, MilvusService_Update_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1224,6 +1235,7 @@ type MilvusServiceServer interface {
 	Insert(context.Context, *InsertRequest) (*MutationResult, error)
 	Delete(context.Context, *DeleteRequest) (*MutationResult, error)
 	Upsert(context.Context, *UpsertRequest) (*MutationResult, error)
+	Update(context.Context, *UpdateRequest) (*MutationResult, error)
 	Search(context.Context, *SearchRequest) (*SearchResults, error)
 	HybridSearch(context.Context, *HybridSearchRequest) (*SearchResults, error)
 	Flush(context.Context, *FlushRequest) (*FlushResponse, error)
@@ -1406,6 +1418,9 @@ func (UnimplementedMilvusServiceServer) Delete(context.Context, *DeleteRequest) 
 }
 func (UnimplementedMilvusServiceServer) Upsert(context.Context, *UpsertRequest) (*MutationResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Upsert not implemented")
+}
+func (UnimplementedMilvusServiceServer) Update(context.Context, *UpdateRequest) (*MutationResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (UnimplementedMilvusServiceServer) Search(context.Context, *SearchRequest) (*SearchResults, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
@@ -2234,6 +2249,24 @@ func _MilvusService_Upsert_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MilvusServiceServer).Upsert(ctx, req.(*UpsertRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MilvusService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MilvusServiceServer).Update(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MilvusService_Update_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MilvusServiceServer).Update(ctx, req.(*UpdateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3622,6 +3655,10 @@ var MilvusService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Upsert",
 			Handler:    _MilvusService_Upsert_Handler,
+		},
+		{
+			MethodName: "Update",
+			Handler:    _MilvusService_Update_Handler,
 		},
 		{
 			MethodName: "Search",

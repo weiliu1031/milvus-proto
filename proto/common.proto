@@ -224,6 +224,7 @@ enum MsgType {
     FlushSegment = 406; // streaming service new msg type for internal usage compatible
     CreateSegment = 407; // streaming service new msg type for internal usage compatible
     Import = 408;
+    Update = 409;
 
     /* QUERY */
     Search = 500;
@@ -456,6 +457,8 @@ enum ObjectPrivilege {
     PrivilegeGetImportProgress = 69;
     PrivilegeListImport = 70;
     PrivilegeAddCollectionField = 71;
+
+    PrivilegeUpdate = 72;
 }
 
 message PrivilegeExt {
