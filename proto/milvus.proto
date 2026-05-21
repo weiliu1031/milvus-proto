@@ -2816,6 +2816,7 @@ message RestoreSnapshotRequest {
   bool rewrite_data = 5; // if true, use import to rewrite data to collection
   string target_db_name = 6; // target db name (where to restore to)
   string target_collection_name = 7; // target collection name (must not exist)
+  uint64 cutoff_ts = 8; // restore cutoff timestamp; rows inserted after it are hidden
 }
 
 message RestoreSnapshotResponse {
